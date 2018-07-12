@@ -19,7 +19,7 @@
         tools:layout_editor_absoluteY="0dp" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/link"
         android:layout_width="337dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
