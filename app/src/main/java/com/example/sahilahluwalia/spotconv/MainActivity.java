@@ -25,20 +25,24 @@ public class MainActivity extends AppCompatActivity implements
         SpotifyPlayer.NotificationCallback, ConnectionStateCallback
 {
     private static final String CLIENT_ID = "82921fab329a4f7e96a9f4abb393e53a";
-
+    private static final int REQUEST_CODE = 1337;
+    private static final String REDIRECT_URI = "https://spotconv/callback";
+    final song current = new song();
     EditText linkText;
     Button checkBtn;
-    song current;
-
-    private Player mPlayer;
+    String authToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        current = new song();
         linkText = findViewById(R.id.link);
         checkBtn = findViewById(R.id.button);
+
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
+        AuthenticationRequest request = builder.build();
+
+        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
         checkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+        authToken = response.getAccessToken();
+        System.out.println("&&&&&&&&&&&&" + authToken);
     }
 
     @Override
