@@ -14,7 +14,8 @@ import okhttp3.Response;
 public class song {
     String URI;
     String name;
-    String thequery;
+    String query;
+    int duration;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private Call mCall;
@@ -22,7 +23,12 @@ public class song {
 
     public void setQuery(String query)
     {
-        this.thequery = query;
+        this.query = query;
+    }
+
+    public void setDuration(int duration)
+    {
+        this.duration = duration;
     }
 
     public String getURI(String link) {
@@ -73,11 +79,13 @@ public class song {
                             .getString("name");
                     String query = songName + " " + songArtist + " mp3";
                     setQuery(query);
+                    int duration = Integer.parseInt(jsonObject.getString("duration_ms"));
+                    setDuration(duration);
                 } catch (JSONException e) {
                     System.out.println("Failed to parse data: " + e);
                 }
             }
         });
-        return this.thequery;
+        return this.query;
     }
 }

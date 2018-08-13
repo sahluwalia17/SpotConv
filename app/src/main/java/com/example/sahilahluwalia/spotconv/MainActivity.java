@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity
                         System.out.println("ERROR!");
                     }
                 }
-                linkText.setText(query);
             }
         });
     }
