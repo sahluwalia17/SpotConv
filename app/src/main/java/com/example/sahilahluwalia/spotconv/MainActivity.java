@@ -11,6 +11,7 @@ import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,31 +52,20 @@ public class MainActivity extends AppCompatActivity
                 String link = linkText.getText().toString();
                 String URI = current.getURI(link);
                 current.setURI(URI);
-                linkText.setText(URI);
 
-                final Request request = new Request.Builder()
-                        .url("https://api.spotify.com/v1/tracks/"+URI)
-                        .addHeader("Authorization","Bearer " + authToken)
-                        .build();
-
-                mCall = mOkHttpClient.newCall(request);
-
-                mCall.enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        System.out.println("Failed to fetch data!");
+                String query = current.getQuery(URI,authToken);
+                while(query == null)
+                {
+                    query = current.getQuery(URI,authToken);
+                    try {
+                        Thread.sleep(1000);
                     }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        try {
-                            final JSONObject jsonObject = new JSONObject(response.body().string());
-                            System.out.println(jsonObject.toString(3));
-                        } catch (JSONException e) {
-                            System.out.println("Failed to parse data: " + e);
-                        }
+                    catch (InterruptedException e)
+                    {
+                        System.out.println("ERROR!");
                     }
-                });
+                }
+                linkText.setText(query);
             }
         });
     }
