@@ -11,18 +11,6 @@ import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 public class MainActivity extends AppCompatActivity
 {
     private static final String CLIENT_ID = "82921fab329a4f7e96a9f4abb393e53a";
@@ -32,8 +20,6 @@ public class MainActivity extends AppCompatActivity
     EditText linkText;
     Button checkBtn;
     String authToken;
-    private final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private Call mCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,18 +39,21 @@ public class MainActivity extends AppCompatActivity
                 String URI = current.getURI(link);
                 current.setURI(URI);
 
-                String query = current.getQuery(URI,authToken);
-                while(query == null)
-                {
-                    query = current.getQuery(URI,authToken);
-                    try {
-                        Thread.sleep(1000);
-                    }
-                    catch (InterruptedException e)
-                    {
-                        System.out.println("ERROR!");
-                    }
+                current.setVars(URI,authToken);
+                try{
+                    Thread.sleep(2000);
                 }
+                catch(InterruptedException ie)
+                {
+                    System.out.println("Thread was interrupted!");
+                }
+                current.setVars(URI,authToken);
+                String query = current.getQuery();
+                int duration = current.getDuration();
+                System.out.println("CLICKED!");
+
+                System.out.println(query);
+                System.out.println(duration);
             }
         });
     }
