@@ -45,7 +45,7 @@ public class YoutubeAPIs {
                 lowestInd = i;
             }
         }
-        return "https://www.youtube.com/watch?v=" + items.getJSONObject(lowestInd).getJSONObject("id").getString("videoId");
+        return items.getJSONObject(lowestInd).getJSONObject("id").getString("videoId");
 
     }
 
