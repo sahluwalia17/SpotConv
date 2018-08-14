@@ -26,9 +26,23 @@ public class song {
         this.query = query;
     }
 
+    public String getQuery()
+    {
+        return this.query;
+    }
+
     public void setDuration(int duration)
     {
         this.duration = duration;
+    }
+
+    public int getDuration()
+    {
+        return this.duration;
+    }
+
+    public void setURI(String URI) {
+        this.URI = URI;
     }
 
     public String getURI(String link) {
@@ -47,11 +61,7 @@ public class song {
         return URI;
     }
 
-    public void setURI(String URI) {
-        this.URI = URI;
-    }
-
-    public String getQuery(String URI, String authcode)
+    public void setVars(String URI, String authcode)
     {
         final Request request = new Request.Builder()
                 .url("https://api.spotify.com/v1/tracks/"+URI)
@@ -78,14 +88,14 @@ public class song {
                             .getJSONObject(0)
                             .getString("name");
                     String query = songName + " " + songArtist + " mp3";
-                    setQuery(query);
                     int duration = Integer.parseInt(jsonObject.getString("duration_ms"));
+
+                    setQuery(query);
                     setDuration(duration);
                 } catch (JSONException e) {
                     System.out.println("Failed to parse data: " + e);
                 }
             }
         });
-        return this.query;
     }
 }
