@@ -27,6 +27,7 @@ public class YoutubeAPIs {
         return new JSONObject(response.toString());
     }
     public static String getVideos(String phrase, int duration) throws Exception {
+        System.out.print("hello nibba");
         phrase = phrase.trim();
         phrase = phrase.replace(" ", "+");
         JSONObject search = getJSONFromString("https://www.googleapis.com/youtube/v3/search?q=" + phrase + "&maxResults=30&type=video&part=snippet&key=AIzaSyB-CKLdCOPDsbRh-MEat4brTcumIqFgCIM");
@@ -45,6 +46,7 @@ public class YoutubeAPIs {
                 lowestInd = i;
             }
         }
+        System.out.print("items:" + items);
         return items.getJSONObject(lowestInd).getJSONObject("id").getString("videoId");
 
     }
