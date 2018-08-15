@@ -1,33 +1,52 @@
 package com.example.sahilahluwalia.spotconv;
 
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.IOException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class YoutubeAPIs {
-    public static final String API_KEY = "AIzaSyB-CKLdCOPDsbRh-MEat4brTcumIqFgCIM";
+    private static final String API_KEY = "AIzaSyB-CKLdCOPDsbRh-MEat4brTcumIqFgCIM";
+
+    private final static OkHttpClient mOkHttpClient = new OkHttpClient();
+    private static Call mCall;
+    private static JSONObject myJSON;
 
     private static JSONObject getJSONFromString(String url) throws Exception {
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("GET");
-        //int responseCode = con.getResponseCode();
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        return new JSONObject(response.toString());
+        final Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        mCall = mOkHttpClient.newCall(request);
+
+        mCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                myJSON = null;
+                System.out.println("Failed to fetch data!");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    myJSON =  new JSONObject(response.body().string());
+                } catch (JSONException e) {
+                    myJSON = null;
+                    System.out.println("Failed to parse data: " + e);
+                }
+            }
+        });
+
+        return myJSON;
     }
     public static String getVideos(String phrase, int duration) throws Exception {
-        System.out.print("hello nibba");
         phrase = phrase.trim();
         phrase = phrase.replace(" ", "+");
         JSONObject search = getJSONFromString("https://www.googleapis.com/youtube/v3/search?q=" + phrase + "&maxResults=30&type=video&part=snippet&key=AIzaSyB-CKLdCOPDsbRh-MEat4brTcumIqFgCIM");
@@ -46,7 +65,6 @@ public class YoutubeAPIs {
                 lowestInd = i;
             }
         }
-        System.out.print("items:" + items);
         return items.getJSONObject(lowestInd).getJSONObject("id").getString("videoId");
 
     }
