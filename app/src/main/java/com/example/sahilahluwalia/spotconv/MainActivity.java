@@ -1,6 +1,7 @@
 package com.example.sahilahluwalia.spotconv;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_CODE = 1337;
     private static final String REDIRECT_URI = "https://spotconv/callback";
     final song current = new song();
+    final YoutubeAPIs accessor = new YoutubeAPIs();
     EditText linkText;
     Button checkBtn;
     String authToken;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity
 
                 current.setVars(URI,authToken);
                 try{
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 }
                 catch(InterruptedException ie)
                 {
@@ -52,8 +54,30 @@ public class MainActivity extends AppCompatActivity
                 int duration = current.getDuration();
                 System.out.println("CLICKED!");
 
-                System.out.println(query);
-                System.out.println(duration);
+                System.out.println(query+" " + duration);
+
+                try {
+                    String video = accessor.getVideos(query,duration);
+                    Thread.sleep(1000);
+                    System.out.println(video);
+                }
+                catch (Exception e)
+                {
+                    System.out.println(e.getMessage());
+                }
+                try {
+                    String video = accessor.getVideos(query, duration);
+                    System.out.println(video);
+                }
+                catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+
+                //String url = "https://www.download-mp3-youtube.com/api/?api_key=MjM5MDYyMjA0&format=mp3&video_id=";
+
+                //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                //startActivity(browserIntent);
+
             }
         });
     }

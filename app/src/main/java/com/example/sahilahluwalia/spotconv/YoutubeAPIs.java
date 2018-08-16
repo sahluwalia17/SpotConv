@@ -16,10 +16,20 @@ public class YoutubeAPIs {
     private static final String API_KEY = "AIzaSyB-CKLdCOPDsbRh-MEat4brTcumIqFgCIM";
 
     private final static OkHttpClient mOkHttpClient = new OkHttpClient();
-    private static Call mCall;
-    private static JSONObject myJSON;
+    private Call mCall;
+    JSONObject myJSON;
 
-    private static JSONObject getJSONFromString(String url) throws Exception {
+    public void setMyJson(JSONObject json)
+    {
+        this.myJSON = json;
+    }
+
+    public JSONObject getMyJSON()
+    {
+        return this.myJSON;
+    }
+
+    public JSONObject getJSONFromString(String url) {
         final Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -29,24 +39,29 @@ public class YoutubeAPIs {
         mCall.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                myJSON = null;
-                System.out.println("Failed to fetch data!");
+                System.out.println("Failed to fetch data!1" + e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     myJSON =  new JSONObject(response.body().string());
+                    if (myJSON == null)
+                    {
+                        System.out.println("BIG PROBLEMO");
+                    }
+                    setMyJson(myJSON);
                 } catch (JSONException e) {
-                    myJSON = null;
-                    System.out.println("Failed to parse data: " + e);
+                    System.out.println("Failed to parse data: " + e.getMessage());
                 }
             }
         });
 
-        return myJSON;
+        System.out.println(myJSON);
+
+        return getMyJSON();
     }
-    public static String getVideos(String phrase, int duration) throws Exception {
+    public String getVideos(String phrase, int duration) throws Exception {
         phrase = phrase.trim();
         phrase = phrase.replace(" ", "+");
         JSONObject search = getJSONFromString("https://www.googleapis.com/youtube/v3/search?q=" + phrase + "&maxResults=30&type=video&part=snippet&key=AIzaSyB-CKLdCOPDsbRh-MEat4brTcumIqFgCIM");
@@ -69,7 +84,7 @@ public class YoutubeAPIs {
 
     }
 
-    private static int[] getScores(String vidId, int realMill) throws Exception {
+    private int[] getScores(String vidId, int realMill) throws Exception {
         JSONObject vidResponse = getJSONFromString("https://www.googleapis.com/youtube/v3/videos?id=" + vidId + "&part=contentDetails,statistics&key=" + API_KEY);
         JSONArray items = vidResponse.getJSONArray("items");
         int[] scores = new int[vidResponse.getJSONObject("pageInfo").getInt("totalResults")];
