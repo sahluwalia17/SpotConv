@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -56,27 +57,36 @@ public class MainActivity extends AppCompatActivity
 
                 System.out.println(query+" " + duration);
 
-                try {
-                    String video = accessor.getVideos(query,duration);
-                    Thread.sleep(1000);
-                    System.out.println(video);
+                String video = null;
+                try{
+                    video = accessor.getVideos(query,duration);
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
                     System.out.println(e.getMessage());
                 }
-                try {
-                    String video = accessor.getVideos(query, duration);
-                    System.out.println(video);
-                }
-                catch (Exception e){
-                    System.out.println(e.getMessage());
+                while(video == null) {
+                    try {
+                        video = accessor.getVideos(query,duration);
+                        Thread.sleep(2000);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
 
-                //String url = "https://www.download-mp3-youtube.com/api/?api_key=MjM5MDYyMjA0&format=mp3&video_id=";
+                if (video != null)
+                {
+                    String message = "Video has been found! Redirecting...";
+                    Toast.makeText(getApplication().getBaseContext(), message,
+                            Toast.LENGTH_SHORT).show();
+                }
+                System.out.println(video);
 
-                //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                //startActivity(browserIntent);
+
+                String url = "https://www.download-mp3-youtube.com/api/?api_key=MjM5MDYyMjA0&format=mp3&video_id=" + video;
+
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
 
             }
         });

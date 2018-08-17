@@ -57,7 +57,17 @@ public class YoutubeAPIs {
             }
         });
 
-        System.out.println(myJSON);
+        while(getMyJSON() == null)
+        {
+            getMyJSON();
+            try {
+                Thread.sleep(1000);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
+        }
 
         return getMyJSON();
     }
@@ -113,7 +123,6 @@ public class YoutubeAPIs {
             JSONObject stats = myItems.getJSONObject("statistics");
             scores[i] = (int)(Math.abs(realMill - mill));
         }
-
 
         return scores;
     }
