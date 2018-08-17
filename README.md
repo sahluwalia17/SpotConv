@@ -1,0 +1,10 @@
+# SpotConv
+Android application that reads a Spotify track URL through the Spotify API and returns a downloadable mp3 based off an seeking algorithm that is run alongside the YoutubeAPI.
+
+Features include: 
+- OkHttp to make network requests
+- JSONObjects/JSONArrays -> Parsed to get certain information such as song, duration, and video scores
+- AuthenticationRequest Builder to set up authorization for user access to Spotify/Youtube API's
+- Threads -> Used to handle concurrent network requests
+- Algorithim that parses Youtube videos and returns the most applicable video in accordance with the Spotify song provided
+- Toast -> To provide user with popup information
