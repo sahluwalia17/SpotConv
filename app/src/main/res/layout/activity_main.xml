@@ -26,7 +26,7 @@
         android:background="#1e90ff"
         android:ems="10"
         android:gravity="center"
-        android:hint="Spotify URI"
+        android:hint="Spotify URL"
         android:inputType="textMultiLine"
         android:textColorHint="#ffffff"
         app:layout_constraintBottom_toBottomOf="@id/imageView"
